@@ -1,0 +1,29 @@
+{
+  "name": "dingtalk-bot-api",
+  "version": "0.0.1",
+  "description": "Simple DingTalk API for Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [
+    "dingtalk"
+  ],
+  "author": "Lsong",
+  "license": "MIT",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "bin": {
+    "dingtalk": "bin/dingtalk.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/song940/dingtalk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/song940/dingtalk/issues"
+  },
+  "homepage": "https://github.com/song940/dingtalk#readme"
+}
