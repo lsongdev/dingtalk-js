@@ -1,24 +1,31 @@
-const http = require('http');
 const crypto = require('crypto');
 
 const readStream = req => new Promise((resolve, reject) => {
   var output = '';
   req
-  .on('error', reject)
-  .on('data', c => output += c)
-  .on('end', () => resolve(output));
+    .on('error', reject)
+    .on('data', c => output += c)
+    .on('end', () => resolve(output));
 });
+
+const reply = (msgtype, data) => {
+  return {
+    msgtype,
+    [msgtype]: data,
+    at: {
+      atMobiles: [],
+      isAtAll: false
+    }
+  };
+};
 
 const dingtalk = ({ secret }, fn) => {
   return async (req, res) => {
     const { timestamp, sign, token } = req.headers;
-    const str = [ timestamp, secret ].join('\n');
+    const str = [timestamp, secret].join('\n');
     const sha256 = crypto.createHmac('sha256', secret);
     const hash = sha256.update(str).digest('base64');
-    console.log(hash, sign);
-
-    if(hash !== sign) return res.end('Invalid Signature');
-
+    if (hash !== sign) return res.end('Invalid Signature');
     const data = await readStream(req);
     const body = JSON.parse(data);
     const { msgtype } = body;
@@ -27,22 +34,4 @@ const dingtalk = ({ secret }, fn) => {
   };
 };
 
-const reply = (msgtype, data) => {
-  return {
-     msgtype,
-     [msgtype]: data,
-     at: {
-         atMobiles: [], 
-         isAtAll: false
-     }
-   };
-};
-
-const app = dingtalk({ 
-  secret: '_QiOA0W298zwRWaXZ4ZjzjIh6HAcqcqWAzg5FfaO2mgojT1v96w-VfkbBK_rPL2Q'
-}, async (content, message) => {
-  console.log('message:', message); 
-  return reply('text', { content });
-});
-
-http.createServer(app).listen(3002);
+module.exports = dingtalk;

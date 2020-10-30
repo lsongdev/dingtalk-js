@@ -130,5 +130,6 @@ class Message {
 }
 
 DingTalk.Message = Message;
+DingTalk.Server = require('./server');
 
 module.exports = DingTalk;
