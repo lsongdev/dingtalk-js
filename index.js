@@ -45,8 +45,6 @@ class DingTalk extends EventEmitter {
     }, options);
   }
   send(message) {
-    if (!(message instanceof Message))
-      throw new TypeError('"message" must be instance of Message');
     const { api, access_token, secret } = this;
     const timestamp = Date.now();
     const str = [timestamp, secret].join('\n');
@@ -67,7 +65,7 @@ class DingTalk extends EventEmitter {
   }
   create(message) {
     const dingtalk = this;
-    return Message.create(Object.assign({
+    return DingTalk.Message.create(Object.assign({
       dingtalk
     }, message));
   }
@@ -78,58 +76,7 @@ class DingTalk extends EventEmitter {
   }
 }
 
-class Message {
-  constructor(message) {
-    Object.assign(this, message);
-  }
-  static create(message) {
-    return new Message(message);
-  }
-  at(isAtAll, atMobiles) {
-    this.at = { isAtAll, atMobiles };
-    return this;
-  }
-  text(content) {
-    this.msgtype = 'text';
-    this.text = { content };
-    return this;
-  }
-  link(title, link, options) {
-    this.msgtype = 'link';
-    if (typeof title === 'object') {
-      this.link = title;
-    } else {
-      this.link = Object.assign({
-        title,
-        text: title,
-        messageUrl: link,
-      }, options);
-    }
-    return this;
-  }
-  markdown(title, text) {
-    this.msgtype = 'markdown';
-    this.markdown = { title, text };
-    return this;
-  }
-  actionCard(actionCard) {
-    this.msgtype = 'actionCard';
-    this.actionCard = actionCard;
-    return this;
-  }
-  feedCard(feedCard) {
-    this.msgtype = 'feedCard';
-    this.feedCard = feedCard;
-    return this;
-  }
-  send() {
-    if (!this.dingtalk)
-      throw new Error('Can not access DingTalk instance');
-    return this.dingtalk.send(this);
-  }
-}
-
-DingTalk.Message = Message;
+DingTalk.Message = require('./message');
 DingTalk.Server = require('./server');
 
 module.exports = DingTalk;

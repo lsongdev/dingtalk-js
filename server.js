@@ -8,17 +8,6 @@ const readStream = req => new Promise((resolve, reject) => {
     .on('end', () => resolve(output));
 });
 
-const reply = (msgtype, data) => {
-  return {
-    msgtype,
-    [msgtype]: data,
-    at: {
-      atMobiles: [],
-      isAtAll: false
-    }
-  };
-};
-
 const dingtalk = ({ secret }, fn) => {
   return async (req, res) => {
     const { timestamp, sign, token } = req.headers;
